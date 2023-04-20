@@ -55,7 +55,7 @@ jobs:
           name: my-artifact
 
 
-      - run: echo hello > path/to/artifact/world.txt
+      - run: echo path/to/artifact/world.txt
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

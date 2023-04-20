@@ -7,7 +7,8 @@ on:
     
 
 jobs:
-  test:
+
+  first:
     name: build test and release
     runs-on: ubuntu-20.04
 
@@ -22,6 +23,39 @@ jobs:
       - name: Checkout impl repo
         uses: actions/checkout@v2
 
+     - run: mkdir -p path/to/artifact
+
+     - run: echo hello > path/to/artifact/world.txt
+
+     - uses: actions/upload-artifact@v3
+       with:
+         name: my-artifact
+         path: path/to/artifact
+
+
+  second:
+    name: build test and release
+    needs: first
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      matrix:
+        java: [ '11' ]
+
+    steps:
+      - name: Check out main repo
+        uses: actions/checkout@v2
+
+      - name: Checkout impl repo
+        uses: actions/checkout@v2
+
+      - name: Down load artificat
+      - uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+          
+          
+      - run: echo hello > path/to/artifact/world.txt
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

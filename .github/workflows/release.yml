@@ -1,0 +1,50 @@
+name: build and release container
+
+on:
+  push:
+     branches:
+      - main
+    
+
+jobs:
+  test:
+    name: build test and release
+    runs-on: ubuntu-20.04
+    container:
+      image: ghcr.io/metaheed/kolle-ci:v0.0.2
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    strategy:
+      matrix:
+        java: [ '11' ]
+
+    steps:
+      - name: Check out main repo
+        uses: actions/checkout@v2
+
+      - name: Checkout impl repo
+        uses: actions/checkout@v2
+
+      - name: Get the tag version
+        id: get_version
+        shell: bash
+        run: echo "##[set-output name=VERSION;]$(echo ${GITHUB_REF#refs/tags/})"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: metaheed/kolle
+          no_push: ${{ github.event_name == 'push' }}
+          workdir: .
+          tags: "latest,${{ steps.get_version.outputs.VERSION }}"
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_PAT }}
+          platforms: linux/amd64,linux/arm64
+
+

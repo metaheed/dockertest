@@ -10,11 +10,6 @@ jobs:
   test:
     name: build test and release
     runs-on: ubuntu-20.04
-    container:
-      image: ghcr.io/metaheed/kolle-ci:v0.0.2
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
     strategy:
       matrix:

@@ -57,6 +57,6 @@ jobs:
 
       - run: echo path/to/artifact/world.txt
       
-      - run: echo world.txt
+      - run: echo `cat world.txt`
 
 
